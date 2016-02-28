@@ -48,16 +48,19 @@ contents = CSV.open "event_attendees.csv", headers: true, header_converters: :sy
 
 template_letter = File.read "form_letter.erb"
 erb_template = ERB.new template_letter
+hours = []
 
 contents.each do |row|
   id = row[0]
   name = row[:first_name]
   zipcode = clean_zipcode(row[:zipcode])
   phonenumber = clean_phone_number(row[:homephone])
-  regdate = Date.strptime(row[:regdate], "%m/%d/%y %H:%M")
+  regdate = DateTime.strptime(row[:regdate], "%m/%d/%y %H:%M")
+  hours << regdate.strftime("%H")
   # THIS IS WHERE I STOPPED
 
   legislators = legislators_by_zipcode(zipcode)
   # form_letter = erb_template.result(binding)
   # save_thank_you_letters(id, form_letter)
 end
+p hours.sort
